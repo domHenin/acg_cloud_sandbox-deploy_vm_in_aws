@@ -18,10 +18,10 @@ resource "aws_security_group" "sg_nginx" {
 
   ingress {
     description = "TLS from VPC"
-    from_port   = 443
-    to_port     = 443
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.vpc_nginx.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -36,6 +36,16 @@ resource "aws_security_group" "sg_nginx" {
     "Name" = var.sg_tag
   }
 }
+
+# resource "aws_subnet" "subnet_pub" {
+#   vpc_id     = aws_vpc.vpc_nginx.id
+#   cidr_block = var.subnet_cidr
+
+#   tags = {
+#     "Name" = "nginx-subnet"
+#   }
+
+# }
 
 resource "aws_instance" "nginx_server" {
   ami             = var.ami_image
