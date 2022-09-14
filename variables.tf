@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "subnet_id" {
   description = "instance security group"
-  default     = "subnet-0cc8eebf581ef0b70"
+  default     = "subnet-01bf2d3bb5765de58"
 }
 
 variable "tags" {
@@ -23,14 +23,27 @@ variable "tags" {
   default     = "nginx_vm"
 }
 
-variable "vpc_id" {
-  description = "id of used VPC"
-  default     = "vpc-0771d68c9d4e097bf"
-}
+// This is the given VPC for Cloud Playground
+# variable "vpc_id" {
+#   description = "id of used VPC"
+#   default     = "vpc-0291a3ce567363748"
+# }
 
-variable "vpc_cidr" {
-  description = "cidr range for selected VPC"
-  default     = "172.31.64.0/20"
+# variable "vpc_cidr" {
+#   description = "cidr range for selected VPC"
+#   default     = "172.31.64.0/20"
+# }
+
+# variable "vpc_cidr" {
+#   description = "cidr range for selected VPC"
+#   default = ""
+
+# }
+
+variable "vpc_cidr_perso" {
+  description = "cidr range for personal VPC"
+  default     = "10.2.0.0/24"
+
 }
 
 variable "sg_ssh_tag" {
@@ -40,12 +53,17 @@ variable "sg_ssh_tag" {
 
 variable "sg_https_tag" {
   description = "name for https security group"
-  default = "nginx_https_sg"
-  
+  default     = "nginx_https_sg"
+
 }
 
-variable "subnet_cidr" {
+variable "pub_cidr" {
   description = "cidr range for subnet"
-  default     = "172.31.0.0/14"
+  default     = "10.0.2.0/24"
+}
+
+variable "sub_tag" {
+  description = "name for public subnet"
+  default     = "public_subnet"
 
 }
