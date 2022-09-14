@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "ami_image" {
   description = "instance image value"
-  default     = "ami-08d4ac5b634553e16"
+  default     = "ami-052efd3df9dad4825"
 }
 
 variable "instance_type" {
@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "subnet_id" {
   description = "instance security group"
-  default     = "subnet-0770f5e2dfff32311"
+  default     = "subnet-0cc8eebf581ef0b70"
 }
 
 variable "tags" {
@@ -25,15 +25,21 @@ variable "tags" {
 
 variable "vpc_id" {
   description = "id of used VPC"
-  default     = "vpc-0f72ba75472a222bb"
+  default     = "vpc-0771d68c9d4e097bf"
 }
 
 variable "vpc_cidr" {
   description = "cidr range for selected VPC"
-  default     = "172.31.0.0/16"
+  default     = "172.31.64.0/20"
 }
 
 variable "sg_tag" {
   description = "name for security group"
   default     = "nginx_sg"
+}
+
+variable "subnet_cidr" {
+  description = "cidr range for subnet"
+  default     = "172.31.0.0/14"
+
 }
