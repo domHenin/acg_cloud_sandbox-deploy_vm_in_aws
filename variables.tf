@@ -33,9 +33,15 @@ variable "vpc_cidr" {
   default     = "172.31.64.0/20"
 }
 
-variable "sg_tag" {
+variable "sg_ssh_tag" {
   description = "name for security group"
-  default     = "nginx_sg"
+  default     = "nginx_ssh_sg"
+}
+
+variable "sg_https_tag" {
+  description = "name for https security group"
+  default = "nginx_https_sg"
+  
 }
 
 variable "subnet_cidr" {

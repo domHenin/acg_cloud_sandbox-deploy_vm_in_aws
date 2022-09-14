@@ -10,9 +10,9 @@ resource "aws_vpc" "vpc_nginx" {
 }
 
 
-resource "aws_security_group" "sg_nginx" {
-  name        = "nginx_sg"
-  description = "security group attached to nginx instance"
+resource "aws_security_group" "sg_ssh_nginx" {
+  name        = "nginx_sg_ssh"
+  description = "security group created for ssh connection"
   vpc_id      = var.vpc_id
 
 
@@ -33,25 +33,50 @@ resource "aws_security_group" "sg_nginx" {
   }
 
   tags = {
-    "Name" = var.sg_tag
+    "Name" = var.sg_ssh_tag
   }
 }
 
-# resource "aws_subnet" "subnet_pub" {
-#   vpc_id     = aws_vpc.vpc_nginx.id
-#   cidr_block = var.subnet_cidr
+resource "aws_security_group" "sg_https_nginx" {
+  name        = "nginx_sg_https"
+  description = "security group created for https connection"
+  vpc_id      = var.vpc_id
 
-#   tags = {
-#     "Name" = "nginx-subnet"
-#   }
 
-# }
+  ingress {
+    description = "TLS from VPC"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    "Name" = var.sg_https_tag
+  }
+}
+
 
 resource "aws_instance" "nginx_server" {
   ami             = var.ami_image
   instance_type   = var.instance_type
   subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.sg_nginx.id]
+  security_groups = [aws_security_group.sg_ssh_nginx.id, aws_security_group.sg_https_nginx.id]
+
+user_data = file("files/nginx_install.sh")
+
+# provisioner "file" {
+#   source = "./web/hello_world.html"
+#   destination = "/var/www/"
+# }
 
 
   tags = {
