@@ -20,13 +20,17 @@ resource "aws_vpc" "vpc_nginx" {
 resource "aws_subnet" "pub_sub" {
   # vpc_id     = aws_vpc.vpc_nginx
   # vpc_id     = aws_vpc.vpc_nginx_personal.id
-  vpc_id = aws_vpc.vpc_nginx.id
+  vpc_id     = aws_vpc.vpc_nginx.id
   cidr_block = var.pub_cidr
 
   tags = {
     Name = var.sub_tag
   }
 }
+
+# resource "aws_internet_gateway" "nginx_ig" {
+#   vpc_id              = var.vpc_id
+# }
 
 
 resource "aws_security_group" "sg_ssh_nginx" {
@@ -100,6 +104,10 @@ resource "aws_instance" "nginx_server" {
   #   source = "./web/hello_world.html"
   #   destination = "/var/www/"
   # }
+
+  depends_on = [
+    aws_internet_gateway.nginx_ig
+  ]
 
 
   tags = {
