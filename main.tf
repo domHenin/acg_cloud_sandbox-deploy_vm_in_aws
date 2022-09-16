@@ -1,5 +1,13 @@
 provider "aws" {}
 
+# terraform {
+#   backend "s3" {
+#     bucket = "cloudusertrtfstate"
+#     key = "cloudplayground/terraform.tfstate"
+#     region = "us-east-1"
+#   }
+# }
+
 resource "aws_vpc" "vpc_nginx" {
   cidr_block = var.vpc_cidr
   #   ipv6_cidr_block = var.ipv6_cidr
@@ -8,6 +16,18 @@ resource "aws_vpc" "vpc_nginx" {
     "Name" = "nginx_VPC"
   }
 }
+
+# resource "aws_route_table" "route_nginx" {
+#   vpc_id = aws_vpc.vpc_nginx.id
+
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#   }
+
+#   tags = {
+#     "Name" = "route-table-nginx"
+#   }
+# }
 
 # resource "aws_vpc" "vpc_nginx_personal" {
 #   cidr_block = var.vpc_cidr_perso
@@ -29,7 +49,11 @@ resource "aws_subnet" "pub_sub" {
 }
 
 # resource "aws_internet_gateway" "nginx_ig" {
-#   vpc_id              = var.vpc_id
+#   vpc_id = var.vpc_id
+
+#   tags = {
+#     "Name" = "igateway_nginx"
+#   }
 # }
 
 
@@ -89,25 +113,50 @@ resource "aws_security_group" "sg_https_nginx" {
   }
 }
 
+resource "aws_key_pair" "deployer" {
+  key_name = "provision_key"
+  public_key = file("~/.ssh/id_rsa.pub")
+  
+}
+
+data "aws_ami" "nginx_ami" {
+  owners = [ "099720109477" ]
+  most_recent = true
+  
+  filter {
+    name = "name"
+    values = ["ubuntu/images/hvm-ssd/*"]
+  }
+  
+}
+
 
 resource "aws_instance" "nginx_server" {
-  ami           = var.ami_image
+  ami           = data.aws_ami.nginx_ami.id
   instance_type = var.instance_type
   # subnet_id     = aws_subnet.pub_sub.id
   subnet_id       = var.subnet_id
   security_groups = [aws_security_group.sg_ssh_nginx.id, aws_security_group.sg_https_nginx.id]
 
+
+connection {
+  type = "ssh"
+  user = "admin"
+  private_key = file("~/.ssh/id_rsa")
+  host = self.publics_ip
+}
+
   # user_data = file("./files/nginx_install.sh")
-  user_data = file("./files/nginx_install.sh")
+  user_data = file("files/nginx_install.sh")
 
   # provisioner "file" {
   #   source = "./web/hello_world.html"
   #   destination = "/var/www/"
   # }
 
-  depends_on = [
-    aws_internet_gateway.nginx_ig
-  ]
+  # depends_on = [
+  #   aws_internet_gateway.nginx_ig
+  # ]
 
 
   tags = {

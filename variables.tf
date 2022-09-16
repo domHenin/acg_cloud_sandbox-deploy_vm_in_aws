@@ -15,7 +15,7 @@ variable "instance_type" {
 
 variable "subnet_id" {
   description = "instance security group"
-  default     = "subnet-0cf0d36215c352247"
+  default     = "subnet-0f38923e7c8a0e7a2"
 }
 
 variable "tags" {
@@ -26,7 +26,7 @@ variable "tags" {
 // This is the given VPC for Cloud Playground
 variable "vpc_id" {
   description = "id of used VPC"
-  default     = "vpc-031195152c90ff61b"
+  default     = "vpc-0410c5f650766ab1a"
 }
 
 # variable "vpc_cidr" {
